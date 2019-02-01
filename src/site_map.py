@@ -4,7 +4,6 @@ import requests
 
 def get_site_data(url, **kwargs):
     session = HTMLSession()
-    print(session)
     response = session.get(url)
 
     if response.status_code == 404:
@@ -16,11 +15,9 @@ def get_site_data(url, **kwargs):
         domain_url = kwargs.get('domain')
 
     response.html.render()
-    print(response.html.html)
     title = response.html.find('title', first=True).text
     links = response.html.absolute_links
     links = {link for link in links if link.startswith(domain_url)}
-
     return {'title': title, 'links': links}
 
 
