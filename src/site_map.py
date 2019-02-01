@@ -30,7 +30,6 @@ def site_map(domain_url):
                 continue
             result[url] = get_title_links(url, domain_url)
             result_tmp.extend(result[url]['links'])
-        print(result_tmp)
         if result_tmp == []:
             break
     return result
