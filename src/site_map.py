@@ -2,15 +2,17 @@ from requests_html import HTMLSession
 import requests
 
 
-def get_site_data(url, domain_url=0):
+def get_site_data(url, **kwargs):
     session = HTMLSession()
     response = session.get(url)
 
     if response.status_code == 404:
         raise requests.exceptions.ConnectionError
 
-    if domain_url == 0:
+    if not kwargs.get('domain'):
         domain_url = url
+    else:
+        domain_url = kwargs.get('domain')
 
     response.html.render()
     title = response.html.find('title', first=True).text
@@ -22,29 +24,29 @@ def get_site_data(url, domain_url=0):
 
 def site_map(domain_url):
     try:
-        result = {domain_url: get_site_data(domain_url)}
+        url_entries = {domain_url: get_site_data(domain_url)}
     except requests.exceptions.ConnectionError:
         return ('Connection Error')
 
-    result_tmp = list(result[domain_url]['links'])
+    urls_to_visit = list(url_entries[domain_url]['links'])
 
     while True:
-        for url in result_tmp.copy():
-            if url in result:
-                result_tmp.remove(url)
+        for url in urls_to_visit.copy():
+            if url in url_entries:
+                urls_to_visit.remove(url)
                 continue
 
             try:
-                site_data = get_site_data(url, domain_url)
+                site_data = get_site_data(url, domain=domain_url)
             except requests.exceptions.ConnectionError:
-                result_tmp.remove(url)
+                urls_to_visit.remove(url)
                 continue
 
-            result[url] = site_data
-            result_tmp.extend(result[url]['links'])
-        if not result_tmp:
+            url_entries[url] = site_data
+            urls_to_visit.extend(url_entries[url]['links'])
+        if not urls_to_visit:
             break
-    return result
+    return url_entries
 
 
 print(site_map('http://0.0.0.0:8000'))
