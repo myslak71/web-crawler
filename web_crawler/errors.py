@@ -3,5 +3,5 @@ class InvalidContentType(Exception):
         self.content_type = content_type
 
     def __str__(self):
-        return f'Invalid Content-Type'
+        return f'Invalid Content-Type. Expected text/html, given {self.content_type}'
 

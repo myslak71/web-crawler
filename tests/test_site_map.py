@@ -1,6 +1,6 @@
 import pytest
 
-from mock import Mock, patch
+from mock import patch
 import responses
 
 from web_crawler.site_map import *
@@ -24,7 +24,7 @@ def test_get_site_data_page_not_found(mock_render):
 @patch('requests_html.HTML.render')
 @responses.activate
 def test_get_site_data_invalid_content_type(mock_render):
-    responses.add(responses.GET, 'http://0.0.0.0', status=200, content_type='text/plain')
+    responses.add(responses.GET, 'http://0.0.0.0', status=200, body=body_no_links, content_type='text/plain')
     assert site_map('http://0.0.0.0') is None
 
 
