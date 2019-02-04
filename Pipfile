@@ -8,6 +8,7 @@ mock = "*"
 responses = "*"
 pytest = "*"
 pytest-cov = "*"
+coveralls = "*"
 
 [packages]
 requests-html = "*"
