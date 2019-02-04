@@ -1,6 +1,5 @@
 from requests_html import HTMLSession
 import requests
-
 from web_crawler.errors import InvalidContentType
 from web_crawler.config import LOGGER
 
@@ -8,13 +7,14 @@ from web_crawler.config import LOGGER
 def get_site_data(url):
     session = HTMLSession()
     response = session.get(url)
-
+    print(response.status_code)
+    print(response.headers.get('Content-Type'))
     if not response.headers.get('Content-Type').startswith('text/html'):
         raise InvalidContentType(response.headers.get('Content-Type'))
     if response.status_code == 404:
         raise requests.exceptions.ConnectionError
-
     response.html.render()
+
     title = response.html.find('title', first=True).text
     return {'title': title, 'links': response.html.absolute_links}
 
@@ -33,7 +33,7 @@ def site_map(domain_url):
         return
     except requests.exceptions.MissingSchema:
         LOGGER.error('Missing protocol. Allowed HTTP and HTTPS')
-        return None
+        return
 
     urls_to_visit = list(url_entries[domain_url]['links'])
 
@@ -59,7 +59,7 @@ def site_map(domain_url):
 
 # print(site_map('https://halome.nu/'))
 # print(site_map('http://onet.pl'))
-print(site_map('http://0.0.0.0:8000'))
+# print(site_map('http://0.0.0.0:8000'))
 
 # session = HTMLSession()
 # response = session.get('ftp://0.0.0.0:8000/text_file.txt')
