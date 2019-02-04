@@ -1,31 +1,40 @@
 import pytest
 
-from mock import patch
-
-from src.site_map import *
+from mock import Mock, patch
+from web_crawler.site_map import *
 import responses
 
-# class TestSiteMap(object):
+body = """
+<head>
+	<title>Test</title>
+</head>
+</html>
+"""
 
-@pytest.fixture
-def mocked_responses():
-    with responses.RequestsMock() as rsps:
-        yield rsps
 
-@patch('requests_html.HTMLSession.get')
-def test_api(mocked_responses):
-    mocked_responses.add(
-        responses.GET, 'http://twitter.com/api/1/foobar',
-        body='{<title>siema</title>}', status=200,
-        content_type='application/json')
-    res = get_site_data('http://twitter.com/api/1/foobar')
-    assert res == {'title': 'siema', 'links': set()}
+@patch('requests_html.HTML.render')
+@responses.activate
+def test_get_site_data_no_links(mock_render):
+    responses.add(responses.GET, 'http://0.0.0.0', body=body, status=200, content_type='text/html')
+    assert site_map('http://0.0.0.0') == {'http://0.0.0.0': {'title': 'Test', 'links': set()}}
 
-    # @patch('requests_html.HTML.render', return_value="""
-    #                                 <title>Page title</title>
-    #                                 <a href="http://0.0.0.0:5000/link1.html>link1</a>
-    #                                 <a href="/link1.html>link1</a>
-    #                                 """)
-    # def test_get_site_data(self, mocked_render):
-    #     self.assertEqual(get_site_data('http://0.0.0.0:4000'),mocked_render())
 
+@patch('requests_html.HTML.render')
+@responses.activate
+def test_get_site_data_page_not_found(mock_render):
+    responses.add(responses.GET, 'http://0.0.0.0', body=body, status=404, content_type='text/html')
+    assert site_map('http://0.0.0.0') is None
+
+
+@patch('requests_html.HTML.render')
+@responses.activate
+def test_get_site_data_invalid_content_type(mock_render):
+    responses.add(responses.GET, 'http://0.0.0.0', body=body, status=200, content_type='text/plain')
+    assert site_map('http://0.0.0.0') is None
+
+
+# @patch('requests_html.HTML.render')
+# @responses.activate
+# def test_site_map(mock_render):
+#     responses.add(responses.GET, 'http://0.0.0.0', body=body, status=200, content_type='text/plain')
+#     assert site_map('http://0.0.0.0') is None
