@@ -2,7 +2,7 @@ import pytest
 
 from mock import patch
 
-from src.site_map import *
+from web_crawler.site_map import *
 import responses
 
 # class TestSiteMap(object):
@@ -12,14 +12,14 @@ def mocked_responses():
     with responses.RequestsMock() as rsps:
         yield rsps
 
-@patch('requests_html.HTMLSession.get')
-def test_api(mocked_responses):
-    mocked_responses.add(
-        responses.GET, 'http://twitter.com/api/1/foobar',
-        body='{<title>siema</title>}', status=200,
-        content_type='application/json')
-    res = get_site_data('http://twitter.com/api/1/foobar')
-    assert res == {'title': 'siema', 'links': set()}
+# @patch('requests_html.HTMLSession.get')
+# def test_api(mocked_responses):
+#     mocked_responses.add(
+#         responses.GET, 'http://twitter.com/api/1/foobar',
+#         body='{<title>siema</title>}', status=200,
+#         content_type='application/json')
+#     res = get_site_data('http://twitter.com/api/1/foobar')
+#     assert res == {'title': 'siema', 'links': set()}
 
     # @patch('requests_html.HTML.render', return_value="""
     #                                 <title>Page title</title>
