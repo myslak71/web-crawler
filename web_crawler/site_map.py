@@ -14,6 +14,18 @@ error_mapping = {
 
 
 def get_site_data(url):
+    """
+    Fetches links and title from given url.
+
+    If page's response Content-Type is not 'text/html', InvalidContentType is raised.
+
+    If
+
+    :param url: str
+        Page url
+    :return: dict
+        Dictionary with two keys: 'title', 'links'
+    """
     session = HTMLSession()
     response = session.get(url)
     if not response.headers.get('Content-Type').startswith('text/html'):

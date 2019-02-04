@@ -13,7 +13,6 @@ pytest = "*"
 [packages]
 requests-html = "*"
 pyyaml = "*"
-fake-useragent = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
