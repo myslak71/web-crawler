@@ -11,7 +11,7 @@ from tests.fixtures.responses import *
 @responses.activate
 def test_get_site_data_no_links(mock_render):
     responses.add(responses.GET, 'http://0.0.0.0', body=body_no_links, status=200, content_type='text/html')
-    assert site_map('http://0.0.0.0') == {'http://0.0.0.0': {'title': 'Test', 'links': set()}}
+    assert site_map('http://0.0.0.0') == {'http://0.0.0.0': {'title': 'No links', 'links': set()}}
 
 
 @patch('requests_html.HTML.render')
