@@ -7,8 +7,6 @@ from web_crawler.config import LOGGER
 def get_site_data(url):
     session = HTMLSession()
     response = session.get(url)
-    print(response.status_code)
-    print(response.headers.get('Content-Type'))
     if not response.headers.get('Content-Type').startswith('text/html'):
         raise InvalidContentType(response.headers.get('Content-Type'))
     if response.status_code == 404:
@@ -28,8 +26,8 @@ def site_map(domain_url):
     except requests.exceptions.InvalidSchema:
         LOGGER.error('Invalid protocol. Allowed HTTP and HTTPS')
         return
-    except InvalidContentType:
-        LOGGER.error('Invalid Content-Type')
+    except InvalidContentType as error:
+        LOGGER.error(error)
         return
     except requests.exceptions.MissingSchema:
         LOGGER.error('Missing protocol. Allowed HTTP and HTTPS')
@@ -57,7 +55,9 @@ def site_map(domain_url):
     return url_entries
 
 
-# print(site_map('https://halome.nu/'))
+
+# print(site_map(''))
+
 # print(site_map('http://onet.pl'))
 # print(site_map('http://0.0.0.0:8000'))
 
