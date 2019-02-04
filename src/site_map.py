@@ -1,24 +1,21 @@
 from requests_html import HTMLSession
 import requests
 
+from errors import InvalidContentType
 
-def get_site_data(url, **kwargs):
+
+def get_site_data(url):
     session = HTMLSession()
     response = session.get(url)
 
+    if response.headers.get('Content-Type') != 'text/html':
+        raise InvalidContentType(response.headers.get('Content-Type'))
     if response.status_code == 404:
         raise requests.exceptions.ConnectionError
 
-    if not kwargs.get('domain'):
-        domain_url = url
-    else:
-        domain_url = kwargs.get('domain')
-
     response.html.render()
     title = response.html.find('title', first=True).text
-    links = response.html.absolute_links
-    links = {link for link in links if link.startswith(domain_url)}
-    return {'title': title, 'links': links}
+    return {'title': title, 'links': response.html.absolute_links}
 
 
 def site_map(domain_url):
@@ -26,26 +23,38 @@ def site_map(domain_url):
         url_entries = {domain_url: get_site_data(domain_url)}
     except requests.exceptions.ConnectionError:
         return ('Connection Error')
+    except requests.exceptions.InvalidSchema:
+        return ('Connection Error')
+    except InvalidContentType:
+        return 'Invalid Content-Type'
 
     urls_to_visit = list(url_entries[domain_url]['links'])
 
-    while True:
+    while urls_to_visit:
         for url in urls_to_visit.copy():
-            if url in url_entries:
+            if url in url_entries or not url.startswith(domain_url):
                 urls_to_visit.remove(url)
                 continue
 
             try:
-                site_data = get_site_data(url, domain=domain_url)
+                site_data = get_site_data(url)
             except requests.exceptions.ConnectionError:
+                urls_to_visit.remove(url)
+                continue
+            except InvalidContentType:
                 urls_to_visit.remove(url)
                 continue
 
             url_entries[url] = site_data
             urls_to_visit.extend(url_entries[url]['links'])
-        if not urls_to_visit:
-            break
+
     return url_entries
 
 
-# print(site_map('http://0.0.0.0:8000'))
+# print(site_map('https://halome.nu/'))
+print(site_map('http://0.0.0.0:8000'))
+
+
+# session = HTMLSession()
+# response = session.get('ftp://0.0.0.0:8000/text_file.txt')
+# print(response)

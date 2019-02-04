@@ -2,3 +2,5 @@
 venv/
 /coverage.data
 /coverage/
+.pytest_cache
+.coverage
