@@ -6,4 +6,3 @@ venv/
 .coverage
 *.log
 htmlcov/
-web_crawler.egg-info/
