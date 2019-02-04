@@ -55,6 +55,9 @@ def site_map(domain_url):
     return url_entries
 
 
+
+# print(site_map(''))
+
 # print(site_map('http://onet.pl'))
 # print(site_map('http://0.0.0.0:8000'))
 
