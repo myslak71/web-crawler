@@ -1,7 +1,16 @@
-from requests_html import HTMLSession
 import requests
+from requests_html import HTMLSession
+
 from web_crawler.errors import InvalidContentType
 from web_crawler.config import LOGGER
+
+error_mapping = {
+    'ConnectionError': 'Requested page was not found',
+    'InvalidSchema': 'Invalid protocol, allowed HTTP and HTTPS',
+    'InvalidContentType': 'Invalid Content-Type. Allowed text/html',
+    'MissingSchema': 'Missing protocol, allowed HTTP and HTTPS',
+    'InvalidURL': 'Invalid URL'
+}
 
 
 def get_site_data(url):
@@ -20,17 +29,8 @@ def get_site_data(url):
 def site_map(domain_url):
     try:
         url_entries = {domain_url: get_site_data(domain_url)}
-    except requests.exceptions.ConnectionError:
-        LOGGER.error('Connection Error')
-        return
-    except requests.exceptions.InvalidSchema:
-        LOGGER.error('Invalid protocol. Allowed HTTP and HTTPS')
-        return
-    except InvalidContentType as error:
-        LOGGER.error(error)
-        return
-    except requests.exceptions.MissingSchema:
-        LOGGER.error('Missing protocol. Allowed HTTP and HTTPS')
+    except Exception as error:
+        LOGGER.error(error_mapping[error.__class__.__name__])
         return
 
     urls_to_visit = list(url_entries[domain_url]['links'])
@@ -42,24 +42,21 @@ def site_map(domain_url):
                 continue
             try:
                 site_data = get_site_data(url)
-            except requests.exceptions.ConnectionError:
-                urls_to_visit.remove(url)
-                continue
-            except InvalidContentType:
+            except Exception:
                 urls_to_visit.remove(url)
                 continue
 
             url_entries[url] = site_data
             urls_to_visit.extend(url_entries[url]['links'])
 
+    LOGGER.info("\n".join("{}\t{}".format(url, entries) for url, entries in url_entries.items()))
     return url_entries
-
 
 
 # print(site_map(''))
 
 # print(site_map('http://onet.pl'))
-# print(site_map('http://0.0.0.0:8000'))
+# print(site_map('http://0.0.0.0:8000/'))
 
 # session = HTMLSession()
 # response = session.get('ftp://0.0.0.0:8000/text_file.txt')
