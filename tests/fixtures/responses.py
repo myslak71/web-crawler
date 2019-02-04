@@ -25,4 +25,9 @@ body_index_site_link = """
 </html>
 """
 
-body_site_empty_link
+body_site_empty_link = """
+<head>
+    <title>Site no links</title>
+</head>
+</html>
+"""
