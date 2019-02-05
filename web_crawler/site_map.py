@@ -39,7 +39,7 @@ def site_map(domain_url):
     try:
         url_entries = {domain_url: get_site_data(domain_url)}
     except Exception as error:
-        LOGGER.error(error_mapping[error.__class__.__name__])
+        LOGGER.error(error_mapping.get(error.__class__.__name__, error))
         return
 
     urls_to_visit = list(url_entries[domain_url]['links'])
@@ -59,10 +59,8 @@ def site_map(domain_url):
             url_entries[url] = site_data
             urls_to_visit.extend(url_entries[url]['links'])
 
-            LOGGER.info(
-                f'Collected entry:\n\t\'{url}\': {{\n\t\t\'title\': \'' +
-                '{url_entries[url]["title"]}\',\n\t\t\'links\': {url_entries[url]["links"]}}}')
-
+            LOGGER.info(f'Collected entry from {url}')
+    LOGGER.info('\n' + '\n'.join('{}\n\t{}'.format(url, entries) for url, entries in url_entries.items()))
     return url_entries
 
 
@@ -81,14 +79,14 @@ def get_site_data(url):
     """
     session = HTMLSession()
     response = session.get(url)
-
     if not response.headers.get('Content-Type').startswith('text/html'):
         raise InvalidContentType(response.headers.get('Content-Type'))
-    if response.status_code != 200:
+    print(response.status_code)
+    LOGGER.error(response.status_code)
+    if response.status_code < 200 or response.status_code > 206:
         raise requests.exceptions.ConnectionError
 
     # adding content rendered by JavaScript
     response.html.render()
     title = response.html.find('title', first=True).text
     return {'title': title, 'links': response.html.absolute_links}
-
