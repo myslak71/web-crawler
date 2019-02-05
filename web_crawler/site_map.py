@@ -1,9 +1,10 @@
 import requests
 from requests_html import HTMLSession
 
-from web_crawler.errors import InvalidContentType
 from web_crawler.config import LOGGER
+from web_crawler.errors import InvalidContentType
 
+# matching exception name with logging message
 error_mapping = {
     'ConnectionError': 'Requested page was not found',
     'InvalidSchema': 'Invalid protocol, allowed HTTP and HTTPS',
@@ -17,7 +18,7 @@ def site_map(domain_url):
     """
     Site crawling function.
 
-    Starts crawling from given domain_url. Visits every html link within specified domain
+    Starts crawl from given domain_url. Visits every html link within specified domain
     via HTTP/HTTPS, collects each site title and links and repeats the process for
     collected links.
 
@@ -44,6 +45,7 @@ def site_map(domain_url):
     urls_to_visit = list(url_entries[domain_url]['links'])
 
     while urls_to_visit:
+
         for url in urls_to_visit.copy():
             if url in url_entries or not url.startswith(domain_url):
                 urls_to_visit.remove(url)
@@ -57,13 +59,16 @@ def site_map(domain_url):
             url_entries[url] = site_data
             urls_to_visit.extend(url_entries[url]['links'])
 
-    LOGGER.info('\n' + '\n'.join('{}\n\t{}'.format(url, entries) for url, entries in url_entries.items()))
+            LOGGER.info(
+                f'Collected entry:\n\t\'{url}\': {{\n\t\t\'title\': \'' +
+                '{url_entries[url]["title"]}\',\n\t\t\'links\': {url_entries[url]["links"]}}}')
+
     return url_entries
 
 
 def get_site_data(url):
     """
-    Fetches links and title from given url.
+    Collects title and links from given url.
 
     If page response's Content-Type is not 'text/html', InvalidContentType is raised.
 
@@ -79,7 +84,7 @@ def get_site_data(url):
 
     if not response.headers.get('Content-Type').startswith('text/html'):
         raise InvalidContentType(response.headers.get('Content-Type'))
-    if response.status_code == 404:
+    if response.status_code != 200:
         raise requests.exceptions.ConnectionError
 
     # adding content rendered by JavaScript
@@ -88,5 +93,4 @@ def get_site_data(url):
     return {'title': title, 'links': response.html.absolute_links}
 
 
-
-print(site_map('http://0.0.0.0:8000/'))
+site_map('http://0.0.0.0:8000/')

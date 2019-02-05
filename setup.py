@@ -19,6 +19,7 @@ setup(
     description='Web Crawler for Clearcode',
     long_description=long_description,
     install_requires=requires,
+    python_requires=">=3.7",
     include_package_data=True,
     entry_points={
         'console_scripts': ['web-crawler=web_crawler.cli:main'],
