@@ -90,3 +90,9 @@ def test_site_map_one_empty_link(mock_render):
     responses.add(responses.GET, 'http://0.0.0.0/site', status=404)
     assert site_map('http://0.0.0.0') == {
         'http://0.0.0.0': {'links': {'http://0.0.0.0/site.html'}, 'title': 'Index empty link'}}
+
+@responses.activate
+def test_get_site_data_invalid_status_code():
+    responses.add(responses.GET, 'http://0.0.0.0/err', status=300, content_type='text/html', body="asdas")
+    with pytest.raises(requests.exceptions.ConnectionError) as error:
+        get_site_data('http://0.0.0.0/err')
