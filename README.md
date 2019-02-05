@@ -30,7 +30,7 @@ Returns dictionary of dictionaries as follows:
 git clone git+https://github.com/myslak71/web_crawler.git
 ```
 ```
-pip install requirements-dev.txt
+pip install requirements.txt
 ```
 
 Installing the package for CLI purposes
