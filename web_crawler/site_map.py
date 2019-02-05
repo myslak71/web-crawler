@@ -94,3 +94,15 @@ print(site_map('http://0.0.0.0:8000/'))
 # session = HTMLSession()
 # response = session.get('ftp://0.0.0.0:8000/text_file.txt')
 # print(response)
+
+# 
+# [dev-packages]
+# mock = "*"
+# responses = "*"
+# pytest-cov = "*"
+# coveralls = "*"
+# pytest = "*"
+# 
+# [packages]
+# requests-html = "*"
+# pyyaml = "*"

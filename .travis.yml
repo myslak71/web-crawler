@@ -4,8 +4,7 @@ dist: xenial
 python: "3.7"
 cache: pip
 install:
-  - pip install pipenv
-  - pipenv install --dev
+  - pip install -r requirements-dev.txt
 script:
   - coverage run -m --source=. --branch pytest tests
 after_success: coveralls
