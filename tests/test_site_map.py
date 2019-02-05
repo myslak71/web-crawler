@@ -94,4 +94,3 @@ def test_site_map_one_empty_link(mock_render):
         'http://0.0.0.0': {'links': {'http://0.0.0.0/site.html'}, 'title': 'Index empty link'}}
 
 
-print(test_site_map_invalid_link_content())
