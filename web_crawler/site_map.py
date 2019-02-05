@@ -79,10 +79,10 @@ def get_site_data(url):
     """
     session = HTMLSession()
     response = session.get(url)
+
     if not response.headers.get('Content-Type').startswith('text/html'):
         raise InvalidContentType(response.headers.get('Content-Type'))
-    print(response.status_code)
-    LOGGER.error(response.status_code)
+
     if response.status_code < 200 or response.status_code > 206:
         raise requests.exceptions.ConnectionError
 
