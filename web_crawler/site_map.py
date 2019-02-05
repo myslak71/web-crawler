@@ -5,7 +5,7 @@ from web_crawler.config import LOGGER
 from web_crawler.errors import InvalidContentType
 
 # matching exception name with logging message
-error_mapping = {
+ERROR_MESSAGES = {
     'ConnectionError': 'Requested page was not found',
     'InvalidSchema': 'Invalid protocol, allowed HTTP and HTTPS',
     'InvalidContentType': 'Invalid Content-Type. Allowed text/html',
@@ -38,8 +38,8 @@ def site_map(domain_url):
     """
     try:
         url_entries = {domain_url: get_site_data(domain_url)}
-    except Exception as error:
-        LOGGER.error(error_mapping.get(error.__class__.__name__, error))
+    except Exception as e:
+        LOGGER.error(ERROR_MESSAGES.get(e.__class__.__name__, e))
         return
 
     urls_to_visit = list(url_entries[domain_url]['links'])
@@ -52,7 +52,8 @@ def site_map(domain_url):
                 continue
             try:
                 site_data = get_site_data(url)
-            except Exception:
+            except Exception as e:
+                LOGGER.warning(e)
                 urls_to_visit.remove(url)
                 continue
 
@@ -60,7 +61,8 @@ def site_map(domain_url):
             urls_to_visit.extend(url_entries[url]['links'])
 
             LOGGER.info(f'Collected entry from {url}')
-    LOGGER.info('\n' + '\n'.join('{}\n\t{}'.format(url, entries) for url, entries in url_entries.items()))
+    LOGGER.info(
+        'Collected entries:\n' + '\n'.join('{}\n\t{}'.format(url, entries) for url, entries in url_entries.items()))
     return url_entries
 
 

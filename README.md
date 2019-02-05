@@ -23,14 +23,7 @@ Returns dictionary of dictionaries as follows:
     }
      
 ### Installation
-```
-git clone git+https://github.com/myslak71/web_crawler.git
-```
-```
-pip install requirements.txt
-```
 
-Installing the package for CLI purposes
 ```
 pip install git+https://github.com/myslak71/web_crawler.git
 ```
@@ -38,6 +31,7 @@ pip install git+https://github.com/myslak71/web_crawler.git
 ### Usage
 In scripts:
 ```
+from web_crawler import site_map
 site_map(url)
 ```
 
