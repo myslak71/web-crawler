@@ -40,8 +40,6 @@ def test_site_map_invalid_schema():
 @responses.activate
 def test_site_map_external_link(mock_render):
     responses.add(responses.GET, 'http://0.0.0.0', status=200, body=body_index_external_link, content_type='text/html')
-    # print(site_map('http://0.0.0.0'))
-    # print('siema')
     assert site_map('http://0.0.0.0') == {
         'http://0.0.0.0': {'links': {'http://clearcode.pl'}, 'title': 'External Link'}}
 
@@ -92,5 +90,3 @@ def test_site_map_one_empty_link(mock_render):
     responses.add(responses.GET, 'http://0.0.0.0/site', status=404)
     assert site_map('http://0.0.0.0') == {
         'http://0.0.0.0': {'links': {'http://0.0.0.0/site.html'}, 'title': 'Index empty link'}}
-
-
