@@ -3,7 +3,7 @@ Web Crawler
 
 [![Build Status](https://travis-ci.org/myslak71/web_crawler.svg?branch=master)](https://travis-ci.org/myslak71/web_crawler)
 [![Coverage Status](https://coveralls.io/repos/github/myslak71/web_crawler/badge.svg?branch=master)](https://coveralls.io/github/myslak71/eb_crawler?branch=master)
-
+![image](https://img.shields.io/badge/python-3.7-blue.svg)
 ### Description
 
 Simple web crawling package.
