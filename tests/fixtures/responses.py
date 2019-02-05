@@ -41,7 +41,6 @@ body_index_external_link = """
 </body>
 </html>"""
 
-
 body_index_redirects = """
 <head>
     <title>External Link</title>
