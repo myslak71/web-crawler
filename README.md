@@ -37,5 +37,5 @@ CLI:
  ```
 |OPTION    | |DESCRIPTION |
 | --------  |---|-------------|
-|-u, --url|REQUIRED |Domain URL to start from|
+|-u, --url|REQUIRED |Domain URL to start crawling from|
 |-h, --help|OPTIONAL |Help|

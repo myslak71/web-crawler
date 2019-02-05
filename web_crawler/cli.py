@@ -18,7 +18,3 @@ def get_parser():
 def main():
     parser = get_parser().parse_args()
     site_map(parser.url)
-
-
-if __name__ == '__main__':
-    main()

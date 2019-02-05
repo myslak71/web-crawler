@@ -7,5 +7,5 @@ install:
   - pip install -r requirements-dev.txt
 script:
   - flake8 --exclude=./tests/* --exit-zero
-  - coverage run -m --source=. --branch pytest tests
+  - coverage run -m --source=web_crawler --branch pytest
 after_success: coveralls
