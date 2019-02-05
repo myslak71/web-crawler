@@ -92,5 +92,3 @@ def get_site_data(url):
     title = response.html.find('title', first=True).text
     return {'title': title, 'links': response.html.absolute_links}
 
-
-site_map('http://0.0.0.0:8000/')
