@@ -13,38 +13,13 @@ error_mapping = {
 }
 
 
-def get_site_data(url):
-    """
-    Fetches links and title from given url.
-
-    If page response's Content-Type is not 'text/html', InvalidContentType is raised.
-
-    If response's status code is 404, requests.exceptions.ConnectionError is raised
-
-    :param url:
-        Page url
-    :return:
-        Dictionary with two keys: 'title' and 'links'
-    """
-    session = HTMLSession()
-    response = session.get(url)
-
-    if not response.headers.get('Content-Type').startswith('text/html'):
-        raise InvalidContentType(response.headers.get('Content-Type'))
-    if response.status_code == 404:
-        raise requests.exceptions.ConnectionError
-
-    response.html.render()
-    title = response.html.find('title', first=True).text
-    return {'title': title, 'links': response.html.absolute_links}
-
-
 def site_map(domain_url):
     """
     Site crawling function.
 
     Starts crawling from given domain_url. Visits every html link within specified domain
-    via HTTP/HTTPS and collects each site title and links.
+    via HTTP/HTTPS, collects each site title and links and repeats the process for
+    collected links.
 
     Returns dictionary of dictionaries in following format:
     {
@@ -82,27 +57,36 @@ def site_map(domain_url):
             url_entries[url] = site_data
             urls_to_visit.extend(url_entries[url]['links'])
 
-    LOGGER.info('URL ENTRIES:\n'+'\n'.join('{}\n\t{}'.format(url, entries) for url, entries in url_entries.items()))
+    LOGGER.info('\n' + '\n'.join('{}\n\t{}'.format(url, entries) for url, entries in url_entries.items()))
     return url_entries
 
 
-# site_map('https://onet.pl')
+def get_site_data(url):
+    """
+    Fetches links and title from given url.
 
-# print(site_map('http://onet.pl'))
+    If page response's Content-Type is not 'text/html', InvalidContentType is raised.
+
+    If response's status code is 404, requests.exceptions.ConnectionError is raised
+
+    :param url:
+        Page url
+    :return:
+        Dictionary with two keys: 'title' and 'links'
+    """
+    session = HTMLSession()
+    response = session.get(url)
+
+    if not response.headers.get('Content-Type').startswith('text/html'):
+        raise InvalidContentType(response.headers.get('Content-Type'))
+    if response.status_code == 404:
+        raise requests.exceptions.ConnectionError
+
+    # adding content rendered by JavaScript
+    response.html.render()
+    title = response.html.find('title', first=True).text
+    return {'title': title, 'links': response.html.absolute_links}
+
+
+
 print(site_map('http://0.0.0.0:8000/'))
-
-# session = HTMLSession()
-# response = session.get('ftp://0.0.0.0:8000/text_file.txt')
-# print(response)
-
-# 
-# [dev-packages]
-# mock = "*"
-# responses = "*"
-# pytest-cov = "*"
-# coveralls = "*"
-# pytest = "*"
-# 
-# [packages]
-# requests-html = "*"
-# pyyaml = "*"
