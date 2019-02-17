@@ -7,7 +7,7 @@ DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(DIR_PATH, 'README.md'), encoding='utf-8') as file:
     long_description = file.read()
 
-requires = ['requests-html==0.9.0', 'pyyaml==3.12']
+requires = ['requests-html==0.9.0', 'pyyaml==3.13']
 
 setup(
     name='web_crawler',
