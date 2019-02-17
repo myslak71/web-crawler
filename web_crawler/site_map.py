@@ -45,7 +45,6 @@ def site_map(domain_url):
     urls_to_visit = list(url_entries[domain_url]['links'])
 
     while urls_to_visit:
-
         for url in urls_to_visit.copy():
             if url in url_entries or not url.startswith(domain_url):
                 urls_to_visit.remove(url)
@@ -56,11 +55,10 @@ def site_map(domain_url):
                 LOGGER.warning(e)
                 urls_to_visit.remove(url)
                 continue
-
             url_entries[url] = site_data
             urls_to_visit.extend(url_entries[url]['links'])
-
             LOGGER.info(f'Collected entry from {url}')
+
     LOGGER.info(
         'Collected entries:\n' + '\n'.join('{}\n\t{}'.format(url, entries) for url, entries in url_entries.items()))
     return url_entries
@@ -72,7 +70,7 @@ def get_site_data(url):
 
     If page response's Content-Type is not 'text/html', InvalidContentType is raised.
 
-    If response's status code is 404, requests.exceptions.ConnectionError is raised
+    If response's status code is unsuccessful, requests.exceptions.ConnectionError is raised
 
     :param url:
         Page url
