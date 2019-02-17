@@ -70,7 +70,7 @@ def get_site_data(url):
 
     If page response's Content-Type is not 'text/html', InvalidContentType is raised.
 
-    If response's status code is unsuccessful, requests.exceptions.ConnectionError is raised
+    If response's status code is not 200, requests.exceptions.ConnectionError is raised
 
     :param url:
         Page url
@@ -83,7 +83,7 @@ def get_site_data(url):
     if not response.headers.get('Content-Type').startswith('text/html'):
         raise InvalidContentType(response.headers.get('Content-Type'))
 
-    if response.status_code < 200 or response.status_code > 206:
+    if response.status_code != 200:
         raise requests.exceptions.ConnectionError
 
     # adding content rendered by JavaScript
