@@ -1,3 +1,5 @@
+from typing import Union
+
 import requests
 from requests_html import HTMLSession
 
@@ -14,7 +16,7 @@ ERROR_MESSAGES = {
 }
 
 
-def site_map(domain_url: str):
+def site_map(domain_url: str) -> Union[dict, None]:
     """
     Site crawling function.
 
@@ -64,7 +66,7 @@ def site_map(domain_url: str):
     return url_entries
 
 
-def get_site_data(url: str):
+def get_site_data(url: str) -> dict:
     """
     Collects title and links from given url.
 
