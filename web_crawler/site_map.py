@@ -14,7 +14,7 @@ ERROR_MESSAGES = {
 }
 
 
-def site_map(domain_url):
+def site_map(domain_url: str):
     """
     Site crawling function.
 
@@ -64,7 +64,7 @@ def site_map(domain_url):
     return url_entries
 
 
-def get_site_data(url):
+def get_site_data(url: str):
     """
     Collects title and links from given url.
 
